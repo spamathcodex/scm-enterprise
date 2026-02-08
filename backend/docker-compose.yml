@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  # Service Database (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: scm_postgres_container
+    restart: always # Agar otomatis nyala jika komputer restart
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: scm_db
+    ports:
+      - "5433:5432" # Port Host : Port Container
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Agar data TIDAK HILANG saat docker dimatikan
+
+volumes:
+  postgres_data:

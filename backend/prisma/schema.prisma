@@ -1,0 +1,122 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. User Management (RBAC - Role Based Access Control)
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // Akan di-hash
+  name      String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  
+  // Relasi: User siapa yang memproses stok?
+  stockMovements StockMovement[]
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  STAFF
+  WAREHOUSE_KEEPER
+}
+
+// 2. Master Data
+model Warehouse {
+  id        Int             @id @default(autoincrement())
+  code      String          @unique
+  name      String
+  location  String?
+  stocks    Inventory[]
+  movements StockMovement[]
+}
+
+model Product {
+  id          Int             @id @default(autoincrement())
+  sku         String          @unique
+  name        String
+  description String?
+  costPrice     Float    @default(0) 
+  sellingPrice  Float    @default(0)
+  price       Decimal         @db.Decimal(15, 2)
+  minStock    Int             @default(5) // Alert jika di bawah ini
+  stocks      Inventory[]
+  movements   StockMovement[]
+}
+
+// 3. Transaksi & Stok
+model Inventory {
+  warehouseId Int
+  productId   Int
+  quantity    Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
+
+  @@id([warehouseId, productId]) // Composite Key
+}
+
+// 4. Audit Trail (Log Tak Bisa Dihapus)
+model StockMovement {
+  id          Int      @id @default(autoincrement())
+  type        MvType   // IN, OUT, ADJUSTMENT
+  priceAtTime Float    @default(0)
+  amount      Int
+  reason      String?
+  reference   String?  // No PO atau No Invoice
+  createdAt   DateTime @default(now())
+  
+  // Relasi
+  productId   Int
+  warehouseId Int
+  userId      Int      // Siapa pelakunya?
+  supplierId  Int? 
+  supplier    Supplier? @relation(fields: [supplierId], references: [id])
+  customerId  Int?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+
+  product     Product   @relation(fields: [productId], references: [id])
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique // Misal: SUP-001
+  name      String
+  address   String?
+  phone     String?
+  email     String?
+  createdAt DateTime @default(now())
+  
+  // Relasi: Satu supplier bisa supply banyak kali barang masuk
+  stockMovements StockMovement[]
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique // CUST-001
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+
+  stockMovements StockMovement[]
+}
+
+enum MvType {
+  IN
+  OUT
+  ADJUST
+  RETURN
+}
