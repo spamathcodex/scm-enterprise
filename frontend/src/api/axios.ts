@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://https://scm-enterprise-production.up.railway.app/api',
+  baseURL: 'https://scm-enterprise-production.up.railway.app/api',
 });
 
 // Otomatis tempelkan Token jika ada di local storage
