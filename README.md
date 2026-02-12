@@ -68,8 +68,6 @@ Aplikasi ini dibangun menggunakan **PERN Stack** dengan **TypeScript** untuk ket
 
 ## 📸 Screenshots
 
-_(Tempatkan screenshot aplikasi kamu di sini. Contoh: Dashboard, Halaman Inventory, dan Contoh PDF Invoice)_
-
 | Dashboard | Manajemen Stok |
 |Orang |---|
 | ![Dashboard](https://via.placeholder.com/400x200?text=Dashboard+View) | ![Inventory](https://via.placeholder.com/400x200?text=Inventory+View) |
