@@ -86,7 +86,7 @@ Ikuti langkah ini untuk menjalankan proyek di komputer lokal Anda.
 ### 1. Clone Repository
 
 ```bash
-git clone [https://github.com/username-kamu/scm-enterprise.git](https://github.com/username-kamu/scm-enterprise.git)
+git clone https://github.com/spamathcodex/scm-enterprise.git
 cd scm-enterprise
 
 2. Setup Backend
