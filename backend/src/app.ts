@@ -15,7 +15,8 @@ const app: Application = express();
 // 1. Middleware Standar
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:5173', // Izin khusus untuk frontend kita
+  // origin: 'http://localhost:5173', // Izin khusus untuk frontend kita
+  origin: 'https://scm-enterprise.vercel.app', // Izin khusus untuk frontend kita
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
