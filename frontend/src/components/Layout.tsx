@@ -7,8 +7,13 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const handleLogout = () => {
-    localStorage.clear();
+    // 1. Hapus token dari penyimpanan
+    localStorage.removeItem('token'); 
+
+    // 2. (Opsional) Hapus data user jika ada
+    localStorage.removeItem('user');
     navigate('/');
+    localStorage.clear();
   };
 
   return (
