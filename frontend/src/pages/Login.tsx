@@ -6,6 +6,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+  const navigate = useNavigate();
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -17,7 +19,10 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(user));
       
       setMessage(`Selamat Datang, ${user.name}!`);
-      // Nanti kita arahkan ke Dashboard
+
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'Login Gagal');
     }
