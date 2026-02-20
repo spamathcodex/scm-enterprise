@@ -71,16 +71,28 @@ export const Dashboard = () => {
               <th className="p-4 text-sm font-semibold text-gray-600">Min. Stok</th>
             </tr>
           </thead>
-          <tbody>
-            {stats.lowStockItems.map((item: any) => (
-              <tr key={item.id} className="border-t border-gray-100 hover:bg-gray-50">
-                <td className="p-4 font-medium">{item.product.name}</td>
-                <td className="p-4 text-gray-600">{item.warehouse.name}</td>
-                <td className="p-4 text-red-600 font-bold">{item.quantity}</td>
-                <td className="p-4 text-gray-500">{item.product.minStock}</td>
-              </tr>
-            ))}
-          </tbody>
+          <tbody className="divide-y divide-gray-100">
+              {!stats.lowStockItems || stats.lowStockItems.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="p-10 text-center">
+                    <div className="flex flex-col items-center justify-center text-gray-400">
+                      {/* Boleh tambah icon di sini kalau mau */}
+                      <p className="text-lg font-medium text-gray-500">Hore! Stok Aman 🚀</p>
+                      <p className="text-sm mt-1">Belum ada barang yang menipis atau perlu di-restock saat ini.</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                stats.lowStockItems.map((item: any, index: number) => (
+                  <tr key={index} className="hover:bg-red-50 transition">
+                    <td className="p-4 font-medium text-gray-800">{item.product.name}</td>
+                    <td className="p-4 text-gray-600">{item.warehouse.name}</td>
+                    <td className="p-4 text-red-600 font-bold">{item.quantity}</td>
+                    <td className="p-4 text-gray-500">{item.product.minStock}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
         </table>
       </div>
     </div>
