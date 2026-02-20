@@ -21,9 +21,7 @@ const Login = () => {
       
       setMessage(`Selamat Datang, ${user.name}!`);
 
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1000);
+      navigate('/dashboard');
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'Login Gagal');
     }
