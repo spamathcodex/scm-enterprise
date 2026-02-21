@@ -26,7 +26,7 @@ export const recordMovement = async (req: AuthRequest, res: Response, next: Next
     if (!userId) throw new Error("User ID tidak ditemukan");
 
     const result = await inventoryService.processMovement({
-      warehouseId, productId, amount, type, reason, userId
+      warehouseId, productId, amount, type, reason, userId, supplierId, customerId
     });
 
     res.status(200).json({
