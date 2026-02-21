@@ -18,7 +18,7 @@ export const createWarehouse = async (req: Request, res: Response, next: NextFun
 // --- STOK OPNAME / MUTASI ---
 export const recordMovement = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const { warehouseId, productId, amount, type, reason } = req.body;
+    const { warehouseId, productId, amount, type, reason, supplierId, customerId } = req.body;
     
     // Ambil ID User dari Token (middleware)
     const userId = req.user?.id; 
