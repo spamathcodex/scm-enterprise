@@ -46,7 +46,7 @@ model Product {
   description String?
   costPrice     Float    @default(0) 
   sellingPrice  Float    @default(0)
-  price       Decimal         @db.Decimal(15, 2)
+  // price       Decimal         @db.Decimal(15, 2)
   minStock    Int             @default(5) // Alert jika di bawah ini
   stocks      Inventory[]
   movements   StockMovement[]

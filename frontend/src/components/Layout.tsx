@@ -12,7 +12,8 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
     // 2. (Opsional) Hapus data user jika ada
     localStorage.removeItem('user');
-    navigate('/');
+    // navigate('/');
+    window.location.href = '/';
     localStorage.clear();
   };
 

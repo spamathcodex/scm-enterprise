@@ -1,49 +1,70 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
-import { ArrowUpCircle, ArrowDownCircle, Filter, Printer, Receipt } from 'lucide-react'; // Tambah Receipt
+import { ArrowUpCircle, ArrowDownCircle, Filter, Printer, Receipt } from 'lucide-react';
 import { generateInvoice } from '../utils/printInvoice';
 
 export const Transactions = () => {
   const [movements, setMovements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // 1. Tambahkan State untuk menyimpan tipe filter saat ini
+  const [filterType, setFilterType] = useState('ALL');
 
   useEffect(() => {
-    // Panggil endpoint yang barusan kita buat
     api.get('/inventory/movements')
       .then(res => setMovements(res.data.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
+  // 2. Buat variabel baru yang isinya adalah data yang sudah disaring
+  const filteredMovements = movements.filter((m) => {
+    if (filterType === 'ALL') return true;
+    return m.type === filterType;
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Riwayat Transaksi (Ledger)</h1>
-        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition shadow-sm">
-          <Filter size={18} /> Filter
-        </button>
+        
+        {/* 3. Ubah Tombol menjadi Dropdown Select */}
+        <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm hover:border-blue-400 transition">
+          <Filter size={18} className="text-gray-500" />
+          <select 
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="bg-transparent text-gray-600 outline-none text-sm font-medium cursor-pointer"
+          >
+            <option value="ALL">Semua Transaksi</option>
+            <option value="IN">Hanya Barang Masuk</option>
+            <option value="OUT">Hanya Barang Keluar</option>
+          </select>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
-          // State saat loading data
           <div className="p-12 text-center flex flex-col items-center">
             <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-gray-500 font-medium">Memuat data transaksi...</p>
           </div>
-        ) : movements.length === 0 ? (
-          // Empty State jika belum ada transaksi
+        ) : filteredMovements.length === 0 ? (
+          // Empty State dinamis berdasarkan filter
           <div className="p-16 text-center flex flex-col items-center justify-center">
             <div className="bg-blue-50 p-5 rounded-full mb-4">
               <Receipt size={48} className="text-blue-500" />
             </div>
-            <p className="text-xl font-medium text-gray-800">Belum Ada Transaksi 📝</p>
+            <p className="text-xl font-medium text-gray-800">
+              {movements.length === 0 ? 'Belum Ada Transaksi 📝' : 'Transaksi Tidak Ditemukan 🔍'}
+            </p>
             <p className="text-sm text-gray-500 mt-2 max-w-md mx-auto">
-              Buku besar (Ledger) masih kosong. Data pergerakan barang (Barang Masuk / Keluar) akan otomatis tercatat di sini saat Anda memproses transaksi di menu <span className="font-semibold text-blue-600">Inventory</span>.
+              {movements.length === 0 
+                ? 'Buku besar (Ledger) masih kosong. Data pergerakan barang akan otomatis tercatat di sini.' 
+                : 'Tidak ada data transaksi yang cocok dengan filter yang Anda pilih saat ini.'}
             </p>
           </div>
         ) : (
-          // Tabel Data Transaksi
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-50 text-gray-600 text-sm font-semibold uppercase border-b border-gray-200">
@@ -55,11 +76,12 @@ export const Transactions = () => {
                   <th className="p-4 text-right whitespace-nowrap">Jumlah</th>
                   <th className="p-4 text-right whitespace-nowrap">Harga</th>
                   <th className="p-4 text-right whitespace-nowrap">Total Nilai</th>
-                  <th className="p-4 text-center">Aksi</th> {/* Fix: Tambah header untuk kolom Print */}
+                  <th className="p-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {movements.map((m) => (
+                {/* 4. Gunakan filteredMovements di sini, bukan movements */}
+                {filteredMovements.map((m) => (
                   <tr key={m.id} className="hover:bg-blue-50/50 transition">
                     <td className="p-4 text-sm text-gray-500 whitespace-nowrap">
                       {new Date(m.createdAt).toLocaleDateString('id-ID', {

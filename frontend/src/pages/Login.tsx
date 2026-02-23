@@ -21,7 +21,8 @@ const Login = () => {
       
       setMessage(`Selamat Datang, ${user.name}!`);
 
-      navigate('/dashboard');
+      // navigate('/dashboard');
+      window.location.href = '/dashboard';
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'Login Gagal');
     }
